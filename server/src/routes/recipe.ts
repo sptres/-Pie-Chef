@@ -37,6 +37,23 @@ router.get('/recipes', async (req, res) => {
   }
 });
 
+router.get('/recipes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const recipe = await Recipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ message: 'Recipe not found' });
+    }
+    res.status(200).json(recipe);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(400).json({ message: 'Unknown error' });
+    }
+  }
+});
+
 router.put('/recipes/:id', async (req, res) => {
   const { id } = req.params;
   const { title, image, time, ingredients, difficultyLevel } = req.body;

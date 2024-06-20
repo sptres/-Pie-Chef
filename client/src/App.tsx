@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RecipeList from './components/RecipeList';
 import AddRecipeForm from './components/AddRecipeForm';
+import UpdateRecipeForm from './components/UpdateRecipeForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'tailwindcss/tailwind.css';
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<RecipeList />} />
               <Route path="/add-recipe" element={<AddRecipeForm />} />
+              <Route path="/update-recipe/:id" element={<UpdateRecipeForm />} />
             </Routes>
           </div>
         </Router>
