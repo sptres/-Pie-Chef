@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,43 +32,51 @@ const RecipeList: React.FC = () => {
     navigate(`/update-recipe/${id}`);
   };
 
+  const renderStars = (count: number) => {
+    const stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push(<FaStar key={i} className="text-yellow-500" />);
+    }
+    return stars;
+  };
+
   return (
     <div className="p-4">
       <ToastContainer />
       <h2 className="text-xl text-black dark:text-white">
         Welcome to Pie Chef!
       </h2>
-      <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe: any) => (
-          <div
-            key={recipe._id}
-            className="bg-gray-100 dark:bg-gray-800 p-4 my-4 rounded"
-          >
-            <h3 className="text-lg text-black dark:text-white">
-              {recipe.title}
-            </h3>
-            <p className="text-sm text-black dark:text-white">
-              Cooking Time: {recipe.time} mins
-            </p>
-            <p className="text-sm text-black dark:text-white">
-              Difficulty: {recipe.difficultyLevel} stars
-            </p>
-            <p className="text-sm text-black dark:text-white">
-              Ingredients: {recipe.ingredients.join(', ')}
-            </p>
-            <div className="flex justify-end space-x-2 mt-2">
-              <button
-                onClick={() => updateRecipe(recipe._id)}
-                className="text-blue-500"
-              >
-                <FaEdit />
-              </button>
-              <button
-                onClick={() => deleteRecipe(recipe._id)}
-                className="text-red-500"
-              >
-                <FaTrash />
-              </button>
+          <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">
+            <figure>
+              <img
+                src={recipe.image}
+                alt={recipe.title}
+                className="w-full h-48 object-cover"
+              />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">{recipe.title}</h2>
+              <p>Cooking Time: {recipe.time} mins</p>
+              <p className="flex items-center">
+                Difficulty: {renderStars(recipe.difficultyLevel)}
+              </p>
+              <p>Ingredients: {recipe.ingredients.join(', ')}</p>
+              <div className="card-actions justify-end">
+                <button
+                  onClick={() => updateRecipe(recipe._id)}
+                  className="btn btn-primary"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  onClick={() => deleteRecipe(recipe._id)}
+                  className="btn btn-secondary"
+                >
+                  <FaTrash />
+                </button>
+              </div>
             </div>
           </div>
         ))}

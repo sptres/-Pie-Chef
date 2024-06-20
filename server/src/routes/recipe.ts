@@ -6,6 +6,10 @@ const router = Router();
 router.post('/recipes', async (req, res) => {
   const { title, image, time, ingredients, difficultyLevel } = req.body;
   try {
+    const existingRecipe = await Recipe.findOne({ title });
+    if (existingRecipe) {
+      return res.status(400).json({ message: 'Recipe title already exists' });
+    }
     const newRecipe = new Recipe({
       title,
       image,
@@ -58,6 +62,10 @@ router.put('/recipes/:id', async (req, res) => {
   const { id } = req.params;
   const { title, image, time, ingredients, difficultyLevel } = req.body;
   try {
+    const existingRecipe = await Recipe.findOne({ title, _id: { $ne: id } });
+    if (existingRecipe) {
+      return res.status(400).json({ message: 'Recipe title already exists' });
+    }
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       id,
       { title, image, time, ingredients, difficultyLevel },
