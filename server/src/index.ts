@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import recipeRoutes from './routes/recipe';
+import authRoutes from './routes/auth';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ mongoose
   });
 
 app.use('/api', recipeRoutes);
+app.use('/api/auth', authRoutes); // Add auth routes
 
 app.get('/', (req, res) => {
   res.send('Hello, Pie Chef!');
