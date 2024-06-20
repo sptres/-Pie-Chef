@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
         </li>
         <li>
           <Link to="/add-recipe" className="text-black dark:text-white">
-            Home
+            Add Recipe
           </Link>
         </li>
       </ul>

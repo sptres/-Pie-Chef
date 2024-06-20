@@ -1,8 +1,11 @@
-// src/components/AddRecipeForm.tsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddRecipeForm: React.FC = () => {
+  const navigate = useNavigate();
   const [newRecipe, setNewRecipe] = useState({
     title: '',
     image: '',
@@ -33,88 +36,96 @@ const AddRecipeForm: React.FC = () => {
         ingredients: ingredientsArray,
       })
       .then((response) => {
-        console.log('Recipe added:', response.data);
+        toast.success('Recipe added successfully!');
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        toast.error('Failed to add recipe.');
+      });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-gray-100 dark:bg-gray-800 p-4 rounded"
-    >
-      <div className="mb-4">
-        <label className="block text-black dark:text-white">Title</label>
-        <input
-          type="text"
-          name="title"
-          value={newRecipe.title}
-          onChange={handleChange}
-          className="w-full p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-black dark:text-white">Image URL</label>
-        <input
-          type="text"
-          name="image"
-          value={newRecipe.image}
-          onChange={handleChange}
-          className="w-full p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-black dark:text-white">
-          Cooking Time (mins)
-        </label>
-        <input
-          type="number"
-          name="time"
-          value={newRecipe.time}
-          onChange={handleChange}
-          className="w-full p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-black dark:text-white">
-          Ingredients (comma-separated)
-        </label>
-        <textarea
-          name="ingredients"
-          value={newRecipe.ingredients}
-          onChange={handleChange}
-          className="w-full p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-black dark:text-white">
-          Difficulty Level (1-5)
-        </label>
-        <select
-          name="difficultyLevel"
-          value={newRecipe.difficultyLevel}
-          onChange={handleChange}
-          className="w-full p-2"
-          required
-        >
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-          <option value={5}>5</option>
-        </select>
-      </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded"
+    <div>
+      <ToastContainer />
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-100 dark:bg-gray-800 p-4 rounded"
       >
-        Add Recipe
-      </button>
-    </form>
+        <div className="mb-4">
+          <label className="block text-black dark:text-white">Title</label>
+          <input
+            type="text"
+            name="title"
+            value={newRecipe.title}
+            onChange={handleChange}
+            className="w-full p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-black dark:text-white">Image URL</label>
+          <input
+            type="text"
+            name="image"
+            value={newRecipe.image}
+            onChange={handleChange}
+            className="w-full p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-black dark:text-white">
+            Cooking Time (mins)
+          </label>
+          <input
+            type="number"
+            name="time"
+            value={newRecipe.time}
+            onChange={handleChange}
+            className="w-full p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-black dark:text-white">
+            Ingredients (comma-separated)
+          </label>
+          <textarea
+            name="ingredients"
+            value={newRecipe.ingredients}
+            onChange={handleChange}
+            className="w-full p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-black dark:text-white">
+            Difficulty Level (1-5)
+          </label>
+          <select
+            name="difficultyLevel"
+            value={newRecipe.difficultyLevel}
+            onChange={handleChange}
+            className="w-full p-2"
+            required
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded"
+        >
+          Add Recipe
+        </button>
+      </form>
+    </div>
   );
 };
 
