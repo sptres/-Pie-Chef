@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RecipeList from './components/RecipeList';
@@ -9,20 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'tailwindcss/tailwind.css';
 
 const App: React.FC = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
   return (
-    <div className={darkMode ? 'dark' : ''}>
-      <div className="bg-white dark:bg-gray-900 min-h-screen">
+    <div className="">
+      <div className="bg-white min-h-screen">
         <Router>
           <Navbar />
           <div className="p-4">
-            <button
-              className="mb-4 text-sm text-black dark:text-white"
-              onClick={() => setDarkMode(!darkMode)}
-            >
-              Toggle Theme
-            </button>
             <Routes>
               <Route path="/" element={<RecipeList />} />
               <Route path="/add-recipe" element={<AddRecipeForm />} />

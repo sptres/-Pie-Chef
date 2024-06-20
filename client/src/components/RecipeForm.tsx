@@ -78,13 +78,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       <ToastContainer />
       <form
         onSubmit={handleSubmit}
-        className="form-control bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg"
+        className="form-control bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-lg"
       >
-        <h2 className="text-2xl mb-4 text-black dark:text-white">
+        <h2 className="text-2xl mb-4 text-black">
           {isEdit ? 'Update Recipe' : 'Add Recipe'}
         </h2>
         <div className="mb-4">
-          <label className="label text-black dark:text-white">Title</label>
+          <label className="label text-black">Title</label>
           <input
             type="text"
             name="title"
@@ -96,7 +96,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           />
         </div>
         <div className="mb-4">
-          <label className="label text-black dark:text-white">Image URL</label>
+          <label className="label text-black">Image URL</label>
           <input
             type="text"
             name="image"
@@ -108,9 +108,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           />
         </div>
         <div className="mb-4">
-          <label className="label text-black dark:text-white">
-            Cooking Time (mins)
-          </label>
+          <label className="label text-black">Cooking Time (mins)</label>
           <input
             type="number"
             name="time"
@@ -122,9 +120,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           />
         </div>
         <div className="mb-4">
-          <label className="label text-black dark:text-white">
-            Add Ingredient
-          </label>
+          <label className="label text-black">Add Ingredient</label>
           <div className="flex">
             <input
               type="text"
@@ -147,7 +143,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 key={index}
                 className="flex items-center justify-between mt-2"
               >
-                <span className="text-black dark:text-white">{ing}</span>
+                <span className="text-black">{ing}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveIngredient(index)}
@@ -160,9 +156,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           </div>
         </div>
         <div className="mb-4">
-          <label className="label text-black dark:text-white">
-            Difficulty Level (1-5)
-          </label>
+          <label className="label text-black">Difficulty Level (1-5)</label>
           <select
             name="difficultyLevel"
             value={recipe.difficultyLevel}
