@@ -43,7 +43,7 @@ const RecipeList: React.FC = () => {
   return (
     <div className="p-4">
       <ToastContainer />
-      <h2 className="text-xl text-black">Welcome to Pie Chef!</h2>
+      <h2 className="text-xl text-black mb-2">Welcome to Pie Chef!</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe: any) => (
           <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">

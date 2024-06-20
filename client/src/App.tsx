@@ -14,7 +14,7 @@ const App: React.FC = () => {
       <div className="bg-white min-h-screen">
         <Router>
           <Navbar />
-          <div className="p-4">
+          <div className="p-4 m-4">
             <Routes>
               <Route path="/" element={<RecipeList />} />
               <Route path="/add-recipe" element={<AddRecipeForm />} />
