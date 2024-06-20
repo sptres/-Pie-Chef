@@ -12,7 +12,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "mongoose": "^8.4.3"
+    "mongoose": "^8.4.3",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
