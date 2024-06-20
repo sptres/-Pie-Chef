@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,7 +7,7 @@ interface RecipeFormProps {
     title: string;
     image: string;
     time: number;
-    ingredients: string;
+    ingredients: string[];
     difficultyLevel: number;
   };
   onSubmit: (data: {
@@ -30,16 +29,14 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     title: '',
     image: '',
     time: 0,
-    ingredients: '',
+    ingredients: [] as string[],
     difficultyLevel: 1,
   });
+  const [ingredient, setIngredient] = useState('');
 
   useEffect(() => {
     if (initialData) {
-      setRecipe({
-        ...initialData,
-        ingredients: initialData.ingredients, // Handle ingredients directly as a string
-      });
+      setRecipe(initialData);
     }
   }, [initialData]);
 
@@ -54,47 +51,64 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     });
   };
 
+  const handleAddIngredient = () => {
+    if (ingredient.trim()) {
+      setRecipe((prevRecipe) => ({
+        ...prevRecipe,
+        ingredients: [...prevRecipe.ingredients, ingredient.trim()],
+      }));
+      setIngredient('');
+    }
+  };
+
+  const handleRemoveIngredient = (index: number) => {
+    setRecipe((prevRecipe) => ({
+      ...prevRecipe,
+      ingredients: prevRecipe.ingredients.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const ingredientsArray = recipe.ingredients
-      .split(',')
-      .map((ingredient) => ingredient.trim());
-    onSubmit({ ...recipe, ingredients: ingredientsArray });
+    onSubmit(recipe);
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
       <ToastContainer />
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-100 dark:bg-gray-800 p-4 rounded"
+        className="form-control bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg"
       >
+        <h2 className="text-2xl mb-4 text-black dark:text-white">
+          {isEdit ? 'Update Recipe' : 'Add Recipe'}
+        </h2>
         <div className="mb-4">
-          <label className="block text-black dark:text-white">Title</label>
+          <label className="label text-black dark:text-white">Title</label>
           <input
             type="text"
             name="title"
             value={recipe.title}
             onChange={handleChange}
-            className="w-full p-2"
+            className="input input-bordered w-full"
             required
-            placeholder={isEdit ? initialData?.title : 'Recipe Title'}
+            placeholder="Recipe Title"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-black dark:text-white">Image URL</label>
+          <label className="label text-black dark:text-white">Image URL</label>
           <input
             type="text"
             name="image"
             value={recipe.image}
             onChange={handleChange}
-            className="w-full p-2"
+            className="input input-bordered w-full"
             required
-            placeholder={isEdit ? initialData?.image : 'Image URL'}
+            placeholder="Image URL"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-black dark:text-white">
+          <label className="label text-black dark:text-white">
             Cooking Time (mins)
           </label>
           <input
@@ -102,33 +116,58 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             name="time"
             value={recipe.time}
             onChange={handleChange}
-            className="w-full p-2"
+            className="input input-bordered w-full"
             required
-            placeholder={isEdit ? `${initialData?.time}` : 'Cooking Time'}
+            placeholder="Cooking Time"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-black dark:text-white">
-            Ingredients (comma-separated)
+          <label className="label text-black dark:text-white">
+            Add Ingredient
           </label>
-          <textarea
-            name="ingredients"
-            value={recipe.ingredients}
-            onChange={handleChange}
-            className="w-full p-2"
-            required
-            placeholder={isEdit ? initialData?.ingredients : 'Ingredients'}
-          />
+          <div className="flex">
+            <input
+              type="text"
+              value={ingredient}
+              onChange={(e) => setIngredient(e.target.value)}
+              className="input input-bordered w-full"
+              placeholder="Ingredient"
+            />
+            <button
+              type="button"
+              onClick={handleAddIngredient}
+              className="btn btn-primary ml-2"
+            >
+              Add
+            </button>
+          </div>
+          <div className="mt-2">
+            {recipe.ingredients.map((ing, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between mt-2"
+              >
+                <span className="text-black dark:text-white">{ing}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveIngredient(index)}
+                  className="btn btn-secondary btn-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="mb-4">
-          <label className="block text-black dark:text-white">
+          <label className="label text-black dark:text-white">
             Difficulty Level (1-5)
           </label>
           <select
             name="difficultyLevel"
             value={recipe.difficultyLevel}
             onChange={handleChange}
-            className="w-full p-2"
+            className="select select-bordered w-full"
             required
           >
             <option value={1}>1</option>
@@ -138,10 +177,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             <option value={5}>5</option>
           </select>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
-        >
+        <button type="submit" className="btn btn-primary w-full">
           {isEdit ? 'Update Recipe' : 'Add Recipe'}
         </button>
       </form>
