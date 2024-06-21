@@ -9,6 +9,7 @@ import Register from './components/Register';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'tailwindcss/tailwind.css';
+import Footer from './components/Footer';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>
+        <Footer />
       </Router>
       <ToastContainer />
     </div>
