@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaStar } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaStar, FaThumbsUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -43,8 +43,10 @@ const RecipeList: React.FC = () => {
   return (
     <div className="p-4">
       <ToastContainer />
-      <h2 className="text-xl text-black mb-2">Welcome to Pie Chef!</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <h2 className="text-xl text-black mb-4 text-center">
+        Welcome to Pie Chef!
+      </h2>
+      <div className="flex flex-wrap justify-center gap-20">
         {recipes.map((recipe: any) => (
           <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">
             <figure>
@@ -55,25 +57,30 @@ const RecipeList: React.FC = () => {
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title">{recipe.title}</h2>
+              <h2 className="card-title text-center">{recipe.title}</h2>
               <p>Cooking Time: {recipe.time} mins</p>
               <p className="flex items-center">
                 Difficulty: {renderStars(recipe.difficultyLevel)}
               </p>
               <p>Ingredients: {recipe.ingredients.join(', ')}</p>
-              <div className="card-actions justify-end">
-                <button
-                  onClick={() => updateRecipe(recipe._id)}
-                  className="btn btn-primary"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => deleteRecipe(recipe._id)}
-                  className="btn btn-secondary"
-                >
-                  <FaTrash />
-                </button>
+              <div className="flex justify-between items-center mt-2">
+                <p className="flex items-center">
+                  <FaThumbsUp className="mr-1" /> {recipe.numOfLikes}
+                </p>
+                <div className="card-actions">
+                  <button
+                    onClick={() => updateRecipe(recipe._id)}
+                    className="btn bg-gray-200 btn-sm"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => deleteRecipe(recipe._id)}
+                    className="btn bg-gray-200 btn-sm"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
