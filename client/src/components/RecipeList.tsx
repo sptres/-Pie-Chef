@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaStar, FaThumbsUp, FaHeart } from 'react-icons/fa';
+import { FaStar, FaThumbsUp, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,18 +15,6 @@ const RecipeList: React.FC = () => {
       .then((response) => setRecipes(response.data))
       .catch((error) => console.error(error));
   }, []);
-
-  const deleteRecipe = (id: string) => {
-    axios
-      .delete(`http://localhost:5000/api/recipes/${id}`)
-      .then((response) => {
-        setRecipes(recipes.filter((recipe: any) => recipe._id !== id));
-        toast.success('Recipe deleted successfully!');
-      })
-      .catch((error) => {
-        toast.error('Failed to delete recipe.');
-      });
-  };
 
   const saveRecipe = async (id: string) => {
     const token = localStorage.getItem('token');
@@ -101,18 +89,6 @@ const RecipeList: React.FC = () => {
                     className="btn bg-gray-200 btn-sm"
                   >
                     <FaHeart />
-                  </button>
-                  <button
-                    onClick={() => navigate(`/update-recipe/${recipe._id}`)}
-                    className="btn bg-gray-200 btn-sm"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    onClick={() => deleteRecipe(recipe._id)}
-                    className="btn bg-gray-200 btn-sm"
-                  >
-                    <FaTrash />
                   </button>
                 </div>
               </div>
