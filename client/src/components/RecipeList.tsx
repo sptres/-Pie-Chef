@@ -1,3 +1,4 @@
+// src/components/RecipeList.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaStar, FaThumbsUp } from 'react-icons/fa';
@@ -48,7 +49,11 @@ const RecipeList: React.FC = () => {
       </h2>
       <div className="flex flex-wrap justify-center gap-20">
         {recipes.map((recipe: any) => (
-          <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">
+          <div
+            key={recipe._id}
+            className="card bg-base-100 shadow-xl w-80 cursor-pointer"
+            onClick={() => navigate(`/recipe/${recipe._id}`)}
+          >
             <figure>
               <img
                 src={recipe.image}
@@ -69,13 +74,19 @@ const RecipeList: React.FC = () => {
                 </p>
                 <div className="card-actions">
                   <button
-                    onClick={() => updateRecipe(recipe._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateRecipe(recipe._id);
+                    }}
                     className="btn bg-gray-200 btn-sm"
                   >
                     <FaEdit />
                   </button>
                   <button
-                    onClick={() => deleteRecipe(recipe._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteRecipe(recipe._id);
+                    }}
                     className="btn bg-gray-200 btn-sm"
                   >
                     <FaTrash />
