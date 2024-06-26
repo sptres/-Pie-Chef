@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import RecipeList from './components/RecipeList';
 import AddRecipeForm from './components/AddRecipeForm';
 import UpdateRecipeForm from './components/UpdateRecipeForm';
+import RecipeDetail from './components/RecipeDetail';
 import Login from './components/Login';
 import Register from './components/Register';
 import { ToastContainer } from 'react-toastify';
@@ -21,6 +22,7 @@ const App: React.FC = () => {
             <Route path="/" element={<RecipeList />} />
             <Route path="/add-recipe" element={<AddRecipeForm />} />
             <Route path="/update-recipe/:id" element={<UpdateRecipeForm />} />
+            <Route path="/recipe/:id" element={<RecipeDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
