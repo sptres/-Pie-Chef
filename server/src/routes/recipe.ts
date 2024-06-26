@@ -183,4 +183,31 @@ router.post(
   }
 );
 
+router.post(
+  '/recipes/:id/comments',
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { text } = req.body;
+    const username = (req as any).user?.username || 'Anonymous';
+    try {
+      const recipe = await Recipe.findById(id);
+      if (!recipe) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+
+      recipe.comments.push({ text, username });
+      recipe.numOfComments = recipe.comments.length;
+      await recipe.save();
+      res.status(200).json({ message: 'Comment added successfully' });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: 'Unknown error' });
+      }
+    }
+  }
+);
+
 export default router;

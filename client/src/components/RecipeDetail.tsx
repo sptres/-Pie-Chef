@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaStar, FaThumbsUp, FaEdit, FaTrash } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const RecipeDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [recipe, setRecipe] = useState<any>(null);
+  const [comment, setComment] = useState<string>('');
 
   useEffect(() => {
     axios
@@ -29,11 +30,42 @@ const RecipeDetail: React.FC = () => {
       .delete(`http://localhost:5000/api/recipes/${id}`)
       .then((response) => {
         toast.success('Recipe deleted successfully!');
-        // Redirect or perform any other actions here if necessary
+        navigate('/'); // Redirect to home or another page
       })
       .catch((error) => {
         toast.error('Failed to delete recipe.');
       });
+  };
+
+  const addComment = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You must be logged in to add comments.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/recipes/${id}/comments`,
+        { text: comment },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setRecipe((prevRecipe: any) => ({
+        ...prevRecipe,
+        comments: [...prevRecipe.comments, { text: comment, username: 'You' }],
+        numOfComments: prevRecipe.numOfComments + 1,
+      }));
+      setComment('');
+      toast.success('Comment added successfully!');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to add comment.');
+      }
+    }
   };
 
   if (!recipe) {
@@ -42,6 +74,7 @@ const RecipeDetail: React.FC = () => {
 
   return (
     <div className="p-4">
+      <ToastContainer />
       <div className="card bg-base-100 shadow-xl w-full max-w-2xl mx-auto">
         <figure>
           <img
@@ -74,6 +107,29 @@ const RecipeDetail: React.FC = () => {
                 className="btn bg-gray-200 btn-sm"
               >
                 <FaTrash />
+              </button>
+            </div>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-lg font-bold">Comments</h3>
+            {recipe.comments.map((comment: any, index: number) => (
+              <div key={index} className="border-t border-gray-200 pt-2 mt-2">
+                <p className="font-semibold">{comment.username}</p>
+                <p>{comment.text}</p>
+              </div>
+            ))}
+            <div className="mt-4">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="textarea textarea-bordered w-full"
+                placeholder="Add a comment"
+              ></textarea>
+              <button
+                onClick={addComment}
+                className="btn bg-blue-500 text-white mt-2"
+              >
+                Add Comment
               </button>
             </div>
           </div>

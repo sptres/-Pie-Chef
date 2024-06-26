@@ -19,7 +19,7 @@ const Register: React.FC = () => {
       toast.success('Registered successfully!');
       setTimeout(() => {
         navigate('/login');
-      }, 2000);
+      }, 1000);
     } catch (error) {
       toast.error('Failed to register');
     }
