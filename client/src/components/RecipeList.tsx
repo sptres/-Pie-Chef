@@ -28,10 +28,6 @@ const RecipeList: React.FC = () => {
       });
   };
 
-  const updateRecipe = (id: string) => {
-    navigate(`/update-recipe/${id}`);
-  };
-
   const saveRecipe = async (id: string) => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -73,7 +69,11 @@ const RecipeList: React.FC = () => {
       </h2>
       <div className="flex flex-wrap justify-center gap-20">
         {recipes.map((recipe: any) => (
-          <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">
+          <div
+            key={recipe._id}
+            className="card bg-base-100 shadow-xl w-80 cursor-pointer"
+            onClick={() => navigate(`/recipe/${recipe._id}`)}
+          >
             <figure>
               <img
                 src={recipe.image}
@@ -92,7 +92,10 @@ const RecipeList: React.FC = () => {
                 <p className="flex items-center">
                   <FaThumbsUp className="mr-1" /> {recipe.numOfLikes}
                 </p>
-                <div className="card-actions">
+                <div
+                  className="card-actions"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
                     onClick={() => saveRecipe(recipe._id)}
                     className="btn bg-gray-200 btn-sm"
@@ -100,7 +103,7 @@ const RecipeList: React.FC = () => {
                     <FaHeart />
                   </button>
                   <button
-                    onClick={() => updateRecipe(recipe._id)}
+                    onClick={() => navigate(`/update-recipe/${recipe._id}`)}
                     className="btn bg-gray-200 btn-sm"
                   >
                     <FaEdit />
