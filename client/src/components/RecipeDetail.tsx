@@ -3,18 +3,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaStar, FaThumbsUp, FaEdit, FaTrash } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Comment from './Comment';
 
 const RecipeDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [recipe, setRecipe] = useState<any>(null);
   const [comment, setComment] = useState<string>('');
+  const [currentUser, setCurrentUser] = useState<string>('');
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/recipes/${id}`)
       .then((response) => setRecipe(response.data))
       .catch((error) => console.error(error));
+
+    // Fetch current user
+    const token = localStorage.getItem('token');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      setCurrentUser(user.id);
+    }
   }, [id]);
 
   const renderStars = (count: number) => {
@@ -54,7 +64,7 @@ const RecipeDetail: React.FC = () => {
       );
       setRecipe((prevRecipe: any) => ({
         ...prevRecipe,
-        comments: [...prevRecipe.comments, { text: comment, username: 'You' }],
+        comments: [...prevRecipe.comments, response.data],
         numOfComments: prevRecipe.numOfComments + 1,
       }));
       setComment('');
@@ -64,6 +74,37 @@ const RecipeDetail: React.FC = () => {
         toast.error(error.response.data.message);
       } else {
         toast.error('Failed to add comment.');
+      }
+    }
+  };
+
+  const deleteComment = async (recipeId: string, commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You must be logged in to delete comments.');
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/recipes/${recipeId}/comments/${commentId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setRecipe((prevRecipe: any) => ({
+        ...prevRecipe,
+        comments: prevRecipe.comments.filter(
+          (comment: any) => comment._id !== commentId
+        ),
+        numOfComments: prevRecipe.numOfComments - 1,
+      }));
+      toast.success('Comment deleted successfully!');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to delete comment.');
       }
     }
   };
@@ -118,10 +159,14 @@ const RecipeDetail: React.FC = () => {
           <div className="mt-4">
             <h3 className="text-lg font-bold">Comments</h3>
             {recipe.comments.map((comment: any, index: number) => (
-              <div key={index} className="border-t border-gray-200 pt-2 mt-2">
-                <p className="font-semibold">{getUsername(comment.username)}</p>
-                <p>{comment.text}</p>
-              </div>
+              <Comment
+                key={index}
+                comment={comment}
+                recipeId={recipe._id}
+                deleteComment={deleteComment}
+                getUsername={getUsername}
+                currentUser={currentUser} // Pass currentUser here
+              />
             ))}
             <div className="mt-4">
               <textarea

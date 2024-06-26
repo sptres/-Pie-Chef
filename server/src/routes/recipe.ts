@@ -189,17 +189,61 @@ router.post(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const { text } = req.body;
-    const username = (req as any).user?.username || 'Anonymous';
+    const username = (req as any).user.username; // assuming the user object has a username field
+
     try {
       const recipe = await Recipe.findById(id);
       if (!recipe) {
         return res.status(404).json({ message: 'Recipe not found' });
       }
 
-      recipe.comments.push({ text, username });
-      recipe.numOfComments = recipe.comments.length;
+      const newComment = {
+        text,
+        username,
+      };
+
+      recipe.comments.push(newComment);
+      recipe.numOfComments += 1;
       await recipe.save();
-      res.status(200).json({ message: 'Comment added successfully' });
+
+      res.status(201).json(newComment);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: 'Unknown error' });
+      }
+    }
+  }
+);
+
+router.delete(
+  '/recipes/:recipeId/comments/:commentId',
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { recipeId, commentId } = req.params;
+
+    try {
+      const recipe = await Recipe.findById(recipeId);
+      if (!recipe) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+
+      const commentIndex = recipe.comments.findIndex(
+        (comment: any) => comment._id.toString() === commentId
+      );
+
+      if (commentIndex === -1) {
+        console.log('Comment not found or not owned by user');
+        return res
+          .status(403)
+          .json({ message: 'You can only delete your own comments' });
+      }
+
+      recipe.comments.splice(commentIndex, 1);
+      recipe.numOfComments -= 1;
+      await recipe.save();
+      res.status(200).json({ message: 'Comment deleted successfully' });
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
