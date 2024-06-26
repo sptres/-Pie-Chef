@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       setTimeout(() => {
         navigate('/');
         window.location.reload(); // Reload to update navbar state
-      }, 2000);
+      }, 1000);
     } catch (error) {
       toast.error('Invalid credentials');
     }

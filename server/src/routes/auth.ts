@@ -1,11 +1,25 @@
-// server/src/routes/auth.ts
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
 const router = Router();
 
-router.post('/register', async (req, res) => {
+export const authenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers['authorization']?.split(' ')[1];
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, 'your_jwt_secret', (err, user) => {
+    if (err) return res.sendStatus(403);
+    (req as any).user = user;
+    next();
+  });
+};
+
+router.post('/register', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const user = new User({ username, password });
@@ -20,7 +34,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });

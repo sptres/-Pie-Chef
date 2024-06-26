@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 interface IRecipe extends Document {
   title: string;
@@ -19,7 +19,7 @@ const RecipeSchema: Schema = new Schema({
   difficultyLevel: { type: Number, required: true },
   numOfLikes: { type: Number, default: 0 },
   numOfComments: { type: Number, default: 0 },
-  savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  savedBy: [{ type: Types.ObjectId, ref: 'User' }],
 });
 
 const Recipe = mongoose.model<IRecipe>('Recipe', RecipeSchema);

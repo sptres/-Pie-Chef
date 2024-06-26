@@ -40,6 +40,13 @@ const Navbar: React.FC = () => {
               Add Recipe
             </Link>
           </li>
+          {isAuthenticated && (
+            <li>
+              <Link to="/saved-recipes" className="btn btn-ghost text-black">
+                Saved
+              </Link>
+            </li>
+          )}
           {isAuthenticated ? (
             <li>
               <button

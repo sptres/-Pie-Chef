@@ -7,6 +7,7 @@ import UpdateRecipeForm from './components/UpdateRecipeForm';
 import RecipeDetail from './components/RecipeDetail';
 import Login from './components/Login';
 import Register from './components/Register';
+import SavedRecipes from './components/SavedRecipes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'tailwindcss/tailwind.css';
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             <Route path="/recipe/:id" element={<RecipeDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/saved-recipes" element={<SavedRecipes />} />
           </Routes>
         </div>
         <Footer />

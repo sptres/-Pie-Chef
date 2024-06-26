@@ -1,19 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaStar, FaThumbsUp, FaHeart } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaStar, FaThumbsUp } from 'react-icons/fa'; // Removed FaHeart import
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const RecipeList: React.FC = () => {
+const SavedRecipes: React.FC = () => {
   const [recipes, setRecipes] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/recipes')
-      .then((response) => setRecipes(response.data))
-      .catch((error) => console.error(error));
+    const fetchSavedRecipes = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('You must be logged in to view saved recipes');
+          return;
+        }
+        const response = await axios.get(
+          'http://localhost:5000/api/recipes/saved',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setRecipes(response.data);
+      } catch (error) {
+        const err = error as any; // Cast error to any
+        if (err.response && err.response.data) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error('Failed to fetch saved recipes');
+        }
+      }
+    };
+
+    fetchSavedRecipes();
   }, []);
 
   const deleteRecipe = (id: string) => {
@@ -32,31 +53,6 @@ const RecipeList: React.FC = () => {
     navigate(`/update-recipe/${id}`);
   };
 
-  const saveRecipe = async (id: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error('You must be logged in to save recipes.');
-      return;
-    }
-
-    try {
-      await axios.post(
-        `http://localhost:5000/api/recipes/${id}/save`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      toast.success('Recipe saved successfully!');
-    } catch (error: any) {
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('Failed to save recipe.');
-      }
-    }
-  };
-
   const renderStars = (count: number) => {
     const stars = [];
     for (let i = 0; i < count; i++) {
@@ -68,9 +64,7 @@ const RecipeList: React.FC = () => {
   return (
     <div className="p-4">
       <ToastContainer />
-      <h2 className="text-xl text-black mb-4 text-center">
-        Welcome to Pie Chef!
-      </h2>
+      <h2 className="text-xl text-black mb-4 text-center">Saved Recipes</h2>
       <div className="flex flex-wrap justify-center gap-20">
         {recipes.map((recipe: any) => (
           <div key={recipe._id} className="card bg-base-100 shadow-xl w-80">
@@ -94,12 +88,6 @@ const RecipeList: React.FC = () => {
                 </p>
                 <div className="card-actions">
                   <button
-                    onClick={() => saveRecipe(recipe._id)}
-                    className="btn bg-gray-200 btn-sm"
-                  >
-                    <FaHeart />
-                  </button>
-                  <button
                     onClick={() => updateRecipe(recipe._id)}
                     className="btn bg-gray-200 btn-sm"
                   >
@@ -121,4 +109,4 @@ const RecipeList: React.FC = () => {
   );
 };
 
-export default RecipeList;
+export default SavedRecipes;
