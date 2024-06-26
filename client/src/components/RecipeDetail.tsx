@@ -30,7 +30,7 @@ const RecipeDetail: React.FC = () => {
       .delete(`http://localhost:5000/api/recipes/${id}`)
       .then((response) => {
         toast.success('Recipe deleted successfully!');
-        navigate('/'); // Redirect to home or another page
+        navigate('/');
       })
       .catch((error) => {
         toast.error('Failed to delete recipe.');
@@ -66,6 +66,11 @@ const RecipeDetail: React.FC = () => {
         toast.error('Failed to add comment.');
       }
     }
+  };
+
+  const getUsername = (email: string) => {
+    const [username] = email.split('@');
+    return username;
   };
 
   if (!recipe) {
@@ -114,7 +119,7 @@ const RecipeDetail: React.FC = () => {
             <h3 className="text-lg font-bold">Comments</h3>
             {recipe.comments.map((comment: any, index: number) => (
               <div key={index} className="border-t border-gray-200 pt-2 mt-2">
-                <p className="font-semibold">{comment.username}</p>
+                <p className="font-semibold">{getUsername(comment.username)}</p>
                 <p>{comment.text}</p>
               </div>
             ))}
