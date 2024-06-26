@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaStar, FaThumbsUp } from 'react-icons/fa'; // Removed FaHeart import
+import {
+  FaEdit,
+  FaTrash,
+  FaStar,
+  FaThumbsUp,
+  FaHeartBroken,
+} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,7 +31,7 @@ const SavedRecipes: React.FC = () => {
         );
         setRecipes(response.data);
       } catch (error) {
-        const err = error as any; // Cast error to any
+        const err = error as any;
         if (err.response && err.response.data) {
           toast.error(err.response.data.message);
         } else {
@@ -51,6 +57,31 @@ const SavedRecipes: React.FC = () => {
 
   const updateRecipe = (id: string) => {
     navigate(`/update-recipe/${id}`);
+  };
+
+  const unsaveRecipe = async (id: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You must be logged in to unsave recipes.');
+      return;
+    }
+    try {
+      await axios.post(
+        `http://localhost:5000/api/recipes/${id}/unsave`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setRecipes(recipes.filter((recipe: any) => recipe._id !== id));
+      toast.success('Recipe unsaved successfully!');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to unsave recipe.');
+      }
+    }
   };
 
   const renderStars = (count: number) => {
@@ -87,6 +118,12 @@ const SavedRecipes: React.FC = () => {
                   <FaThumbsUp className="mr-1" /> {recipe.numOfLikes}
                 </p>
                 <div className="card-actions">
+                  <button
+                    onClick={() => unsaveRecipe(recipe._id)}
+                    className="btn bg-gray-200 btn-sm"
+                  >
+                    <FaHeartBroken />
+                  </button>
                   <button
                     onClick={() => updateRecipe(recipe._id)}
                     className="btn bg-gray-200 btn-sm"
