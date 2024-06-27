@@ -13,7 +13,9 @@ const RecipeDetail: React.FC = () => {
   const [recipe, setRecipe] = useState<any>(null);
   const [comment, setComment] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<string>('');
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalItemType, setModalItemType] = useState<string>('recipe');
+  const [currentCommentId, setCurrentCommentId] = useState<string>('');
 
   useEffect(() => {
     axios
@@ -25,7 +27,7 @@ const RecipeDetail: React.FC = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
-      setCurrentUser(user.id);
+      setCurrentUser(user.username); // Use username instead of id
     }
   }, [id]);
 
@@ -47,11 +49,6 @@ const RecipeDetail: React.FC = () => {
       .catch((error) => {
         toast.error('Failed to delete recipe.');
       });
-  };
-
-  const handleDelete = () => {
-    deleteRecipe(recipe._id);
-    setIsModalOpen(false);
   };
 
   const addComment = async (e: React.FormEvent) => {
@@ -122,6 +119,15 @@ const RecipeDetail: React.FC = () => {
     return username;
   };
 
+  const handleDelete = () => {
+    if (modalItemType === 'recipe') {
+      deleteRecipe(recipe._id);
+    } else {
+      deleteComment(recipe._id, currentCommentId);
+    }
+    setIsModalOpen(false);
+  };
+
   if (!recipe) {
     return <div>Loading...</div>;
   }
@@ -157,7 +163,10 @@ const RecipeDetail: React.FC = () => {
                 <FaEdit />
               </button>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setModalItemType('recipe');
+                  setIsModalOpen(true);
+                }}
                 className="btn bg-gray-200 btn-sm"
               >
                 <FaTrash />
@@ -174,6 +183,9 @@ const RecipeDetail: React.FC = () => {
                 deleteComment={deleteComment}
                 getUsername={getUsername}
                 currentUser={currentUser}
+                setModalItemType={setModalItemType}
+                setIsModalOpen={setIsModalOpen}
+                setCurrentCommentId={setCurrentCommentId}
               />
             ))}
             <form onSubmit={addComment} className="mt-4">

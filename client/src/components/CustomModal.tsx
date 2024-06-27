@@ -17,7 +17,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded shadow-lg">
         <h2 className="text-xl mb-4">
-          Are you sure you want to delete this recipe? <br />
+          Are you sure you want to delete? <br />
           This action cannot be undone.
         </h2>
         <div className="flex justify-end">
