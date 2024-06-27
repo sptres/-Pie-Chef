@@ -5,8 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+interface Recipe {
+  _id: string;
+  title: string;
+  image: string;
+  time: number;
+  ingredients: string[];
+  difficultyLevel: number;
+  numOfLikes: number;
+}
+
 const RecipeList: React.FC = () => {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +51,38 @@ const RecipeList: React.FC = () => {
     }
   };
 
+  const likeRecipe = async (id: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You must be logged in to like recipes.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/recipes/${id}/like`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setRecipes((prevRecipes) =>
+        prevRecipes.map((recipe) =>
+          recipe._id === id
+            ? { ...recipe, numOfLikes: response.data.numOfLikes }
+            : recipe
+        )
+      );
+      toast.success('Recipe liked successfully!');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to like recipe.');
+      }
+    }
+  };
+
   const renderStars = (count: number) => {
     const stars = [];
     for (let i = 0; i < count; i++) {
@@ -56,7 +98,7 @@ const RecipeList: React.FC = () => {
         Welcome to Pie Chef!
       </h2>
       <div className="flex flex-wrap justify-center gap-20">
-        {recipes.map((recipe: any) => (
+        {recipes.map((recipe) => (
           <div
             key={recipe._id}
             className="card bg-base-100 shadow-xl w-80 cursor-pointer"
@@ -77,7 +119,13 @@ const RecipeList: React.FC = () => {
               </p>
               <p>Ingredients: {recipe.ingredients.join(', ')}</p>
               <div className="flex justify-between items-center mt-2">
-                <p className="flex items-center">
+                <p
+                  className="flex items-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    likeRecipe(recipe._id);
+                  }}
+                >
                   <FaThumbsUp className="mr-1" /> {recipe.numOfLikes}
                 </p>
                 <div

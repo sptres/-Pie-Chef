@@ -254,4 +254,34 @@ router.delete(
   }
 );
 
+router.post(
+  '/recipes/:id/like',
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const recipe = await Recipe.findById(id);
+      if (!recipe) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+
+      recipe.numOfLikes += 1;
+      await recipe.save();
+
+      res
+        .status(200)
+        .json({
+          message: 'Recipe liked successfully',
+          numOfLikes: recipe.numOfLikes,
+        });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: 'Unknown error' });
+      }
+    }
+  }
+);
+
 export default router;
