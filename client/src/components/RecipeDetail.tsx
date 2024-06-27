@@ -5,6 +5,7 @@ import { FaStar, FaThumbsUp, FaEdit, FaTrash } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Comment from './Comment';
+import CustomModal from './CustomModal';
 
 const RecipeDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const RecipeDetail: React.FC = () => {
   const [recipe, setRecipe] = useState<any>(null);
   const [comment, setComment] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     axios
@@ -45,6 +47,11 @@ const RecipeDetail: React.FC = () => {
       .catch((error) => {
         toast.error('Failed to delete recipe.');
       });
+  };
+
+  const handleDelete = () => {
+    deleteRecipe(recipe._id);
+    setIsModalOpen(false);
   };
 
   const addComment = async (e: React.FormEvent) => {
@@ -150,7 +157,7 @@ const RecipeDetail: React.FC = () => {
                 <FaEdit />
               </button>
               <button
-                onClick={() => deleteRecipe(recipe._id)}
+                onClick={() => setIsModalOpen(true)}
                 className="btn bg-gray-200 btn-sm"
               >
                 <FaTrash />
@@ -183,6 +190,11 @@ const RecipeDetail: React.FC = () => {
           </div>
         </div>
       </div>
+      <CustomModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

@@ -21,7 +21,7 @@ const AddRecipeForm: React.FC = () => {
         toast.success('Recipe added successfully!');
         setTimeout(() => {
           navigate('/');
-        }, 2000);
+        }, 1000);
       })
       .catch((error) => {
         if (
