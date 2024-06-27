@@ -47,7 +47,8 @@ const RecipeDetail: React.FC = () => {
       });
   };
 
-  const addComment = async () => {
+  const addComment = async (e: React.FormEvent) => {
+    e.preventDefault();
     const token = localStorage.getItem('token');
     if (!token) {
       toast.error('You must be logged in to add comments.');
@@ -165,23 +166,20 @@ const RecipeDetail: React.FC = () => {
                 recipeId={recipe._id}
                 deleteComment={deleteComment}
                 getUsername={getUsername}
-                currentUser={currentUser} // Pass currentUser here
+                currentUser={currentUser}
               />
             ))}
-            <div className="mt-4">
+            <form onSubmit={addComment} className="mt-4">
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 className="textarea textarea-bordered w-full"
                 placeholder="Add a comment"
               ></textarea>
-              <button
-                onClick={addComment}
-                className="btn bg-blue-500 text-white mt-2"
-              >
+              <button type="submit" className="btn bg-blue-500 text-white mt-2">
                 Add Comment
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
