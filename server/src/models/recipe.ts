@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 interface IComment {
   text: string;
   username: string;
+  createdAt: Date;
 }
 
 interface IRecipe extends Document {
@@ -20,6 +21,7 @@ interface IRecipe extends Document {
 const CommentSchema: Schema = new Schema({
   text: { type: String, required: true },
   username: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const RecipeSchema: Schema = new Schema({

@@ -200,6 +200,7 @@ router.post(
       const newComment = {
         text,
         username,
+        createdAt: new Date(),
       };
 
       recipe.comments.push(newComment);
@@ -268,12 +269,10 @@ router.post(
       recipe.numOfLikes += 1;
       await recipe.save();
 
-      res
-        .status(200)
-        .json({
-          message: 'Recipe liked successfully',
-          numOfLikes: recipe.numOfLikes,
-        });
+      res.status(200).json({
+        message: 'Recipe liked successfully',
+        numOfLikes: recipe.numOfLikes,
+      });
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });

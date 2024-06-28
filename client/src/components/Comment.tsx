@@ -1,6 +1,7 @@
 // Comment.tsx
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
+import moment from 'moment';
 
 interface CommentProps {
   comment: any;
@@ -26,7 +27,10 @@ const Comment: React.FC<CommentProps> = ({
   return (
     <div className="border-t border-gray-200 pt-2 mt-2">
       <div className="flex justify-between items-center">
-        <p className="font-semibold">{getUsername(comment.username)}</p>
+        <p className="font-semibold">
+          {getUsername(comment.username)} -{' '}
+          {moment(comment.createdAt).format('YYYY/MM/DD h:mm A')}
+        </p>
         <div>
           {comment.username && comment.username === currentUser && (
             <button
