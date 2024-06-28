@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaStar, FaThumbsUp, FaHeartBroken } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SavedRecipes: React.FC = () => {
   const [recipes, setRecipes] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSavedRecipes = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
+          setIsAuthenticated(false);
           toast.error('You must be logged in to view saved recipes');
           return;
         }
@@ -67,6 +71,25 @@ const SavedRecipes: React.FC = () => {
     }
     return stars;
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="p-4">
+        <ToastContainer />
+        <div className="flex flex-col items-center">
+          <h2 className="text-xl text-black mb-4 text-center">
+            You must be logged in to view saved recipes.
+          </h2>
+          <button
+            onClick={() => navigate('/')}
+            className="btn bg-blue-500 text-white"
+          >
+            Go to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
