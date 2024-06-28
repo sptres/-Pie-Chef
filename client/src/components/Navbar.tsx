@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { GiChefToque } from 'react-icons/gi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Navbar: React.FC = () => {
-  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -14,7 +15,10 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
-    navigate('/');
+    toast.success('Logged out successfully!');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   return (
