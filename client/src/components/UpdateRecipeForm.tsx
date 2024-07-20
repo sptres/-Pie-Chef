@@ -39,7 +39,7 @@ const UpdateRecipeForm: React.FC = () => {
         toast.success('Recipe updated successfully!');
         setTimeout(() => {
           navigate('/');
-        }, 1000);
+        }, 2000);
       })
       .catch((error) => {
         if (
